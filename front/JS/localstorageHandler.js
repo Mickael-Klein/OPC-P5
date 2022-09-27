@@ -2,6 +2,11 @@
 
 
 function saveCart(cart) {
+    for(let i in cart) {
+        if(cart[i].quantity == 0) {
+            cart.splice(i, 1);
+        }
+    }
     localStorage.setItem("cart", JSON.stringify(cart));
 }
 
@@ -39,18 +44,9 @@ function addCart(product) {
             cart.push(product);
         }
     }
+    cart = cart.sort((a, b) => (a.id > b.id) ? 1 : -1);
     saveCart(cart);
 }
-
-/* function sortCart() {
-    let cart = getCart();
-    if(cart.length == 0) {
-        saveCart();
-    } else{
-        cart = cart.sort((a,b) => a.id - b.id);
-        saveCart();
-    }
-} */
 
 function removeFromCart(product) {
     let cart = getCart();
