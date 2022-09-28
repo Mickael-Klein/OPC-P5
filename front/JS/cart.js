@@ -3,11 +3,8 @@
  // Generer le recap produits dans panier 
 
  let arr = [];
-//  let cart = getCart();
-//  cart = cart.sort((a,b) => a.id - b.id);
-//  saveCart(cart);
 
- function generateProductArticleArray() {
+ function generateCartContent() {
 
     fetch("http://localhost:3000/api/products") 
         .then(function(res) {
@@ -22,6 +19,7 @@
             }
             return arr;
         })
+        .catch(err => console.log(err))
         .then(function(arr) {
             let cart = getCart();
             const targetNode = document.querySelector("#cart__items");
@@ -58,6 +56,32 @@
                 targetNode.appendChild(article);
             }
         })
+        .then(function displayTotalQuantityAndPrice() {
+            let cart = getCart();
+            let totalQuantity = 0;
+            console.log(totalQuantity);
+            let totalPrice = 0;
+            console.log(totalPrice);
+            for(let i in cart) {
+                totalQuantity += Number(cart[i].quantity);
+                console.log("La quantité totale est : ");
+                console.log(totalQuantity);
+
+                const found = arr.find(selected => selected._id == cart[i].id)
+                totalPrice += cart[i].quantity * found.price;
+            }
+            console.log(totalQuantity);
+            console.log(totalPrice);
+
+            let targetTotalQuantity = document.querySelector("#totalQuantity");
+            let targetTotalPrice = document.querySelector("#totalPrice");
+
+            targetTotalQuantity.innerText = ``;
+            targetTotalPrice.innerText = ``;
+
+            targetTotalQuantity.innerText = `${totalQuantity}`;
+            targetTotalPrice.innerText = `${totalPrice}`;
+        })
         .then(function removeElementOnClick() {
             const btnList = document.querySelectorAll(".deleteItem");
             let cart = getCart();
@@ -77,7 +101,7 @@
                 const targetNode = document.querySelector("#cart__items");
                 targetNode.innerHTML = "";
 
-                generateProductArticleArray();
+                generateCartContent();
             })); 
         })
         .then(function quantityModifier() {
@@ -90,7 +114,7 @@
                     const targetNode = document.querySelector("#cart__items");
                     targetNode.innerHTML = "";
 
-                    generateProductArticleArray();
+                    generateCartContent();
                 }
                 let targetArticle = event.target.closest("article");
                 let targetId = targetArticle.dataset.id;
@@ -109,9 +133,9 @@
 
                 targetNodeP.textContent = "";
                 targetNodeP.textContent = `Qté : ${changedValue}`;
-                
 
-                // generateProductArticleArray();
+                
+                // generateCartContent();
             }));
         })
         // .catch(err => console.log(err));
@@ -119,4 +143,4 @@
  
 
 
-generateProductArticleArray();
+generateCartContent();
